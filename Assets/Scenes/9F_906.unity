@@ -176,7 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8b57bb073417b24a832d2ddcf3ed7ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 5
+  moveSpeed: 8
   walkDown: {fileID: 7400000, guid: f9e4820734ef8dc4d87474f0c8720a78, type: 2}
   walkUp: {fileID: 7400000, guid: 501d34721a3cf184b8d64789841d512b, type: 2}
   walkLeft: {fileID: 7400000, guid: dbc942d1f6215b745b8a6f2dc9e17aca, type: 2}
