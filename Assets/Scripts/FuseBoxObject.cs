@@ -1,9 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
 public class FuseBoxObject : MonoBehaviour
 {
     public GameObject marker;
     private bool isPlayerNearby = false;
+    private bool isCooldown = false; //  딜레이 중인지 체크할 변수
 
     void Start()
     {
@@ -12,22 +14,30 @@ public class FuseBoxObject : MonoBehaviour
 
     void Update()
     {
-        // 가까이 있고 + E키를 눌렀을 때
-        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
+        // 가까이 있고 + E키를 눌렀고 + 딜레이 중이 아닐 때만 실행
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E) && !isCooldown)
         {
             if (FuseBoxUI.Instance != null)
             {
-                //  만약 UI 패널이 이미 켜져 있다면, 여기서 열기 코드를 실행하지 않음!
-                // (UI 매니저가 Update에서 닫는 처리를 할 것이므로, 문 스크립트는 가만히 있어야 함)
+                // UI가 이미 켜져 있다면 여기서는 아무것도 안 함 (FuseBoxUI가 닫을 수 있게 양보)
                 if (FuseBoxUI.Instance.uiPanel.activeSelf)
                 {
                     return;
                 }
 
-                // UI 패널이 완전히 꺼져있을 때만 새로 열어줍니다.
+                // UI가 꺼져있을 때만 새로 열기 요청 후 1초 딜레이 시작
                 FuseBoxUI.Instance.OpenFuseBox();
+                StartCoroutine(OpenCooldownRoutine());
             }
         }
+    }
+
+    // 1초 동안 열기 기능을 잠그는 코루틴
+    private IEnumerator OpenCooldownRoutine()
+    {
+        isCooldown = true;
+        yield return new WaitForSeconds(1.0f); // 1초 동안 대기
+        isCooldown = false;
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
