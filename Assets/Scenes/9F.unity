@@ -2796,7 +2796,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   roomNumber: 902
   isLocked: 1
-  targetSceneName: 9F
+  targetSceneName: 9F_902
   marker: {fileID: 0}
 --- !u!61 &1159619408
 BoxCollider2D:
