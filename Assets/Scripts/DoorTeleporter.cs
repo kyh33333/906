@@ -1,29 +1,64 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class DoorTeleporter : MonoBehaviour
+public class DoorInteraction : MonoBehaviour
 {
-    [Header("이동할 씬 이름 (대소막자 일치)")]
+    [Header("Door Settings")]
+    public string roomNumber;
+    public bool isLocked;
     public string targetSceneName;
+
+    [Header("Visual Indicator")]
+    public GameObject marker;
+
+    private bool isPlayerNearby = false;
+
+    void Start()
+    {
+        if (marker != null) marker.SetActive(false);
+    }
+
+    void Update()
+    {
+        if (isPlayerNearby && Input.GetKeyDown(KeyCode.E))
+        {
+            InteractWithDoor();
+        }
+    }
+
+    void InteractWithDoor()
+    {
+        if (isLocked)
+        {
+            // 콘솔이 아니라 화면 UI 매니저를 호출하여 "000호다." 출력
+            if (TextWindowManager.Instance != null)
+            {
+                TextWindowManager.Instance.ShowMessage($"{roomNumber}호다.");
+            }
+        }
+        else
+        {
+            if (!string.IsNullOrEmpty(targetSceneName))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(targetSceneName);
+            }
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 무언가 문에 부딪혔을 때 콘솔에 출력
-        Debug.Log($"[문 충돌 감지] 부딪힌 오브젝트: {collision.gameObject.name} | 태그: {collision.tag}");
-
-        // 부딪힌 오브젝트의 태그가 "Player"인지 확인!
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("[플레이어 확인] 플레이어가 문에 닿았습니다. 씬 전환을 시도합니다.");
+            isPlayerNearby = true;
+            if (marker != null) marker.SetActive(true);
+        }
+    }
 
-            if (!string.IsNullOrEmpty(targetSceneName))
-            {
-                SceneManager.LoadScene(targetSceneName);
-            }
-            else
-            {
-                Debug.LogWarning("[경고] 이동할 targetSceneName이 비어있습니다!");
-            }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+        {
+            isPlayerNearby = false;
+            if (marker != null) marker.SetActive(false);
         }
     }
 }
